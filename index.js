@@ -22,7 +22,7 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://your-frontend.vercel.app',
+  'https://p2-p-frontend-ruddy.vercel.app/',
 ];
 
 app.use(cors({
@@ -58,7 +58,7 @@ const io = initSocket(server); // Initialize socket.io
 
 // Test route
 app.get('/', (req, res) => {
-  res.send('API is running...');
+  res.send('API is running now...');
 });
 
 const PORT = process.env.PORT || 5000;
