@@ -12,7 +12,6 @@ import adminStatsRoutes from "./routes/adminStatsRoutes.js"; // <- new file
 import session from "express-session";
 import passport from "passport";
 import "./config/passport.js"; // Initialize passport config
-import { Server } from "socket.io"; // Import socket.io server
 
 
 dotenv.config();
@@ -32,7 +31,7 @@ app.use(cors({
   credentials: true
 }));
 
-
+const server = http.createServer(app);
 // Middleware
 
 app.use(express.json());
@@ -42,8 +41,6 @@ app.use('/api/user', userRoutes);
 app.use('/api/trades', tradeRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminStatsRoutes); // <- new route for admin stats
-
-const server = http.createServer(app);
 
 
 app.use(
