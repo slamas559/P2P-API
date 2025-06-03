@@ -22,7 +22,7 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://p2-p-frontend-ruddy.vercel.app/',
+  'https://p2-p-frontend-ruddy.vercel.app',
 ];
 
 app.use(cors({
