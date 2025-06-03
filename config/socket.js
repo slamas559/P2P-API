@@ -1,28 +1,27 @@
-import { Server } from "socket.io";
-
 let io;
 
 export const initSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: "*", // Adjust this for production
+      origin: [
+        "http://localhost:5173",
+        "https://p2-p-frontend-ruddy.vercel.app",
+      ],
       methods: ["GET", "POST"],
+      credentials: true
     },
+    transports: ["websocket"] // Optional but recommended for production
   });
 
   io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
+    console.log("✅ New client connected:", socket.id);
 
-    socket.on("join_conversation", (conversationId) => {
-      socket.join(conversationId);
-    });
-
-    socket.on("send_message", ({ conversationId, message }) => {
-      socket.to(conversationId).emit("receive_message", message);
+    socket.on("send_message", (data) => {
+      socket.broadcast.emit("receive_message", data);
     });
 
     socket.on("disconnect", () => {
-      console.log("User disconnected:", socket.id);
+      console.log("❌ Client disconnected:", socket.id);
     });
   });
 
