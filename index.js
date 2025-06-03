@@ -19,7 +19,6 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const server = http.createServer(app);
 
 
 const allowedOrigins = [
@@ -43,6 +42,8 @@ app.use('/api/user', userRoutes);
 app.use('/api/trades', tradeRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminStatsRoutes); // <- new route for admin stats
+
+const server = http.createServer(app);
 
 
 app.use(
