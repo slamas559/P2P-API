@@ -12,13 +12,22 @@ import adminStatsRoutes from "./routes/adminStatsRoutes.js"; // <- new file
 import session from "express-session";
 import passport from "passport";
 import "./config/passport.js"; // Initialize passport config
+import { Server } from "socket.io"; // Import socket.io server
 
 
 dotenv.config();
 connectDB();
 
 const app = express();
+const server = http.createServer(app);
 
+const io = new Server(server, {
+  cors: {
+    origin: 'https://p2-p-frontend-ruddy.vercel.app', // your frontend domain
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
 
 const allowedOrigins = [
   'http://localhost:5173',
@@ -31,7 +40,7 @@ app.use(cors({
   credentials: true
 }));
 
-const server = http.createServer(app);
+
 // Middleware
 
 app.use(express.json());
@@ -55,7 +64,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-const io = initSocket(server); // Initialize socket.io
+// const io = initSocket(server); // Initialize socket.io
 
 // Test route
 app.get('/', (req, res) => {
