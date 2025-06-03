@@ -1,3 +1,6 @@
+import { Server } from "socket.io";
+import dotenv from "dotenv";
+
 let io;
 
 export const initSocket = (server) => {
