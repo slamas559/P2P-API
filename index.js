@@ -30,15 +30,13 @@ app.use('/api/trades', tradeRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminStatsRoutes); // <- new route for admin stats
 
-const allowedOrigins = [process.env.CLIENT_URL];
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://your-frontend.vercel.app',
+];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    callback(new Error('Not allowed by CORS'));
-  },
+  origin: allowedOrigins,
   credentials: true
 }));
 
