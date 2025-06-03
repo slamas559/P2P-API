@@ -19,6 +19,17 @@ connectDB();
 
 const app = express();
 
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://your-frontend.vercel.app',
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
 const server = http.createServer(app);
 // Middleware
 
@@ -30,15 +41,6 @@ app.use('/api/trades', tradeRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminStatsRoutes); // <- new route for admin stats
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://your-frontend.vercel.app',
-];
-
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
 
 app.use(
   session({
