@@ -31,6 +31,10 @@ app.use(cors({
   credentials: true
 }));
 
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 const server = http.createServer(app);
 // Middleware
 
@@ -50,9 +54,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 
 const io = initSocket(server); // Initialize socket.io
