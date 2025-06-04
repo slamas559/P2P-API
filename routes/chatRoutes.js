@@ -11,23 +11,23 @@ const router = express.Router();
  * @body { receiverId: String }
  */
 router.post("/conversation", auth, async (req, res) => {
-  const { receiverId } = req.body;
+  const { receiver } = req.body;
 
-  if (!receiverId) {
+  if (!receiver) {
     return res.status(400).json({ msg: "Receiver ID is required" });
   }
 
   try {
     // Reuse conversation if it exists
     const existing = await Conversation.findOne({
-      members: { $all: [req.user.id, receiverId] },
+      members: { $all: [req.user.id, receiver] },
     });
 
     if (existing) return res.json(existing);
 
     // Create new conversation
     const newConversation = new Conversation({
-      members: [req.user.id, receiverId],
+      members: [req.user.id, receiver],
     });
 
     await newConversation.save();
@@ -44,10 +44,10 @@ router.get("/conversations", auth, async (req, res) => {
       members: { $in: [req.user.id] },
     }).populate("members", "name email _id").sort({ updatedAt: -1 });
 
-    res.json(conversations);
+    return res.json(conversations);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ msg: "Server error" });
+    return res.status(500).json({ msg: "Server error" });
   }
 });
 
