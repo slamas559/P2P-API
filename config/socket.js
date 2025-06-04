@@ -17,7 +17,7 @@ export const initSocket = (server) => {
       methods: ["GET", "POST"],
       credentials: true
     },
-    transports: ["websocket"]
+    transports: ["polling", "websocket"]
   });
 
   io.on("connection", (socket) => {
@@ -36,10 +36,10 @@ export const initSocket = (server) => {
         const { sender, receiver, text, conversationId } = data;
 
         const newMsg = new Message({
-          sender: mongoose.Types.ObjectId(sender),
-          receiver: mongoose.Types.ObjectId(receiver),
+          sender: new mongoose.Types.ObjectId(sender),
+          receiver: new mongoose.Types.ObjectId(receiver),
           text,
-          conversationId: mongoose.Types.ObjectId(conversationId),
+          conversationId: new mongoose.Types.ObjectId(conversationId),
         });
 
         let savedMsg = await newMsg.save();
