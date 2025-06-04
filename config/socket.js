@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import dotenv from "dotenv";
-import Message from "../models/Message.js"; // adjust path to your model
+import { Message } from "../models/Message"; // adjust path to your model
 import mongoose from "mongoose";
 dotenv.config();
 
