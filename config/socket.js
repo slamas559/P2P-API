@@ -27,6 +27,10 @@ export const initSocket = (server) => {
       socket.join(conversationId.toString());
     });
 
+    socket.on("join_user", (userId) => {
+      socket.join(userId.toString());
+    });
+
     socket.on("send_message", async (data) => {
       try {
         const { sender, receiver, text, conversationId } = data;
@@ -46,6 +50,7 @@ export const initSocket = (server) => {
         ]);
 
         io.to(conversationId.toString()).emit("receive_message", savedMsg);
+        io.to(receiver.toString()).emit("receive_message", savedMsg);
 
       } catch (error) {
         console.error("❌ Error handling message:", error);
