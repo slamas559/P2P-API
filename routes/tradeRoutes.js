@@ -35,9 +35,21 @@ router.post('/', auth, admin, async (req, res) => {
 // @desc Public - list all trades
 router.get('/', async (req, res) => {
   try {
-    const trades = await TradeRequest.find().populate('createdBy', 'name email').sort({ createdAt: -1 });;
-    return res.json(trades);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
+
+    const trades = await TradeRequest.find()
+      .populate('createdBy', 'name email')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await TradeRequest.countDocuments();
+
+    return res.json({ trades, total }); // ✅ Correct key names
   } catch (err) {
+    console.error(err);
     return res.status(500).json({ msg: 'Server error' });
   }
 });
