@@ -17,9 +17,14 @@ const messageSchema = new mongoose.Schema(
     },
     text: {
       type: String,
-      required: true,
     },
+    image: { type: String, default: null },
     seen: { type: Boolean, default: false },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      expires: 86400, // 24 hours = 60 * 60 * 24 seconds
+    },
   },
   { timestamps: true }
 );

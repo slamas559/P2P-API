@@ -33,12 +33,16 @@ export const initSocket = (server) => {
 
     socket.on("send_message", async (data) => {
       try {
-        const { sender, receiver, text, conversationId } = data;
+        const { sender, receiver, text, image, conversationId } = data;
+        if (!text && !image) {
+          return console.warn("Rejected message: empty text and image.");
+        }
 
         const newMsg = new Message({
           sender: new mongoose.Types.ObjectId(sender),
           receiver: new mongoose.Types.ObjectId(receiver),
           text,
+          image,
           conversationId: new mongoose.Types.ObjectId(conversationId),
         });
 
@@ -56,6 +60,22 @@ export const initSocket = (server) => {
         console.error("❌ Error handling message:", error);
       }
     });
+
+    // 🔥 Typing event handling
+    socket.on("typing", ({ conversationId, user }) => {
+      socket.to(conversationId.toString()).emit("user_typing", {
+        conversationId,
+        user,
+      });
+    });
+
+    socket.on("stop_typing", ({ conversationId, user }) => {
+      socket.to(conversationId.toString()).emit("user_stop_typing", {
+        conversationId,
+        user,
+      });
+    });
+
 
     socket.on("disconnect", () => {
       console.log("❌ Client disconnected:", socket.id);

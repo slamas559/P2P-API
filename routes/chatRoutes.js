@@ -42,9 +42,29 @@ router.get("/conversations", auth, async (req, res) => {
   try {
     const conversations = await Conversation.find({
       members: { $in: [req.user.id] },
-    }).populate("members", "name email _id").sort({ updatedAt: -1 });
+    })
+      .populate("members", "name email _id");
 
-    return res.json(conversations);
+    const enrichedConversations = await Promise.all(
+      conversations.map(async (conv) => {
+        const lastMessage = await Message.findOne({ conversationId: conv._id })
+          .sort({ createdAt: -1 });
+
+        return {
+          ...conv.toObject(),
+          lastMessage,
+        };
+      })
+    );
+
+    // Sort by latest message timestamp
+    enrichedConversations.sort((a, b) => {
+      const dateA = a.lastMessage?.createdAt || a.updatedAt;
+      const dateB = b.lastMessage?.createdAt || b.updatedAt;
+      return new Date(dateB) - new Date(dateA); // descending order
+    });
+
+    return res.json(enrichedConversations);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ msg: "Server error" });

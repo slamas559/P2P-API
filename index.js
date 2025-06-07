@@ -12,12 +12,20 @@ import adminStatsRoutes from "./routes/adminStatsRoutes.js"; // <- new file
 import session from "express-session";
 import passport from "passport";
 import "./config/passport.js"; // Initialize passport config
+import path from 'path';
+import { fileURLToPath } from 'url';
+import uploadRoutes from './routes/uploadRoutes.js';
+
+
+const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 
 dotenv.config();
 connectDB();
 
 const app = express();
+
 
 
 const allowedOrigins = [
@@ -39,12 +47,19 @@ const server = http.createServer(app);
 
 app.use(express.json());
 
+if (process.env.NODE_ENV !== 'production') {
+  // Serve static files from the "uploads" directory in development
+  const __dirname = path.resolve();
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+}
+
 app.use('/api/auth', apiRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/trades', tradeRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminStatsRoutes); // <- new route for admin stats
-
+// app.use('/uploads', express.static('uploads'));
+app.use('/api',uploadRoutes); // <- new route for file uploads
 
 app.use(
   session({
