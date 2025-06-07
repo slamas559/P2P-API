@@ -15,6 +15,7 @@ import "./config/passport.js"; // Initialize passport config
 import path from 'path';
 import { fileURLToPath } from 'url';
 import uploadRoutes from './routes/uploadRoutes.js';
+import MongoStore from 'connect-mongo';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -66,6 +67,15 @@ app.use(
     secret: process.env.SESSION_SECRET || 'your_secret_key_here',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI, // your MongoDB connection string
+      ttl: 14 * 24 * 60 * 60, // = 14 days
+    }),
+    cookie: {
+      secure: true, // set true if using HTTPS
+      sameSite: "none", // needed for cross-origin cookies (e.g., Vercel + Railway)
+      httpOnly: true,
+    },
   })
 );
 

@@ -43,7 +43,7 @@ const upload = multer({ storage });
 router.post('/upload', upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded." });
 
-  const isProduction = process.env.NODE_ENV === 'production';
+  // const isProduction = process.env.NODE_ENV === 'production';
   // const imageUrl = isProduction ? req.file.path : `http://localhost:5000/uploads/${req.file.filename}`;
   const imageUrl = req.file.path; // Cloudinary provides the full URL in production
   // In production, the path is the URL provided by Cloudinary
